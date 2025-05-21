@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useAppStore } from "../store/useAppStore";
 import { shiftColors } from "../utils/shiftConfig";
 import { getTodayShiftInfo } from "../utils/getTodayShiftInfo";
@@ -12,6 +12,8 @@ import ShiftLegend from "./ShiftLegend";
 import SettingsPanel from "./SettingsPanel";
 import NumberOfShifts from "./NumberOfShifts";
 import SalarySummary from "./SalarySummary";
+import EditShiftModal from "./EditShiftModal";
+// import { saveSettingsToStorage } from "../utils/settingsStorage";
 
 const ShiftsCalendar = () => {
   const { selectedMonth, selectedYear,shiftType,showShiftCount,showSalary,setSelectedMonth,setSelectedYear,shifts,setShifts,} = useAppStore();
@@ -22,15 +24,14 @@ const ShiftsCalendar = () => {
   const { theme, toggleTheme } = useTheme();
   const holidayDates = generateHolidayDates(selectedYear);
   const [showNotification, setShowNotification] = useState(false);
+  const [editingShift, setEditingShift] = useState(null);
 
   const openSettings = () => setIsSettingsOpen(true);
   const closeSettings = () => setIsSettingsOpen(false);
 
-  const triggerNotification = () => {
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 1000);
-  };
-
+  const touchStartX = useRef(null);
+  const touchEndX = useRef(null);
+  
   useEffect(() => {
     const today = new Date();
     setSelectedMonth(today.getMonth());
@@ -46,10 +47,19 @@ const ShiftsCalendar = () => {
   setShifts(shifts);
 }, [selectedMonth, selectedYear, shiftType, setShifts]);
 
-  useEffect(() => {
+useEffect(() => {
     const info = getTodayShiftInfo(selectedYear, selectedMonth, shiftType);
     if (info) setSelectedDateInfo(info);
   }, [shifts, selectedMonth, selectedYear, shiftType]);
+
+  useEffect(() => {
+    if (isSettingsOpen || editingShift) {
+      document.querySelector('body').style.overflow = "hidden"
+    } else {
+      document.querySelector('body').style.overflow = "auto"
+    }
+    return () => document.querySelector('body').style.overflow = "auto"
+  },[isSettingsOpen, editingShift]);
 
   const handleMonthChange = (e) => setSelectedMonth(parseInt(e.target.value));
   const handleYearChange = (e) => setSelectedYear(parseInt(e.target.value));
@@ -63,15 +73,20 @@ const ShiftsCalendar = () => {
       icon: shift.icon,
     });
   };
+  
+  const triggerNotification = () => {
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 1000);
+  };
 
-const shiftSummary = useMemo(() => {
+  const shiftSummary = useMemo(() => {
     let total = 0;
     let night = 0;
     let holidayDayHours = 0;
     let holidayNightHours = 0;
-
+    
     const createDate = (year, month, day) => {
-        return new Date(Date.UTC(year, month, day, 12));
+      return new Date(Date.UTC(year, month, day, 12));
     };
 
     const shiftsMap = new Map();
@@ -136,11 +151,58 @@ const shiftSummary = useMemo(() => {
     return { total, night, holidayDayHours, holidayNightHours };
 }, [shifts, considerHolidays, selectedMonth, selectedYear, holidayDates]);
 
+const handleTouchStart = (e) => {
+  touchStartX.current = e.changedTouches[0].screenX;
+};
+
+const handleTouchEnd = (e) => {
+  touchEndX.current = e.changedTouches[0].screenX;
+  const deltaX = touchStartX.current - touchEndX.current;
+
+  if (deltaX > 100 && !isSettingsOpen) {
+    // Свайп влево — открыть
+    openSettings();
+  } else if (deltaX < -100 && isSettingsOpen) {
+    // Свайп вправо — закрыть
+    closeSettings();
+  }
+};
+
+  const handleEditShift = (shift) => {
+    if (!shift || !shift.day || shift.name === "Пусто") return;
+    setEditingShift(shift);
+  };
+
+  const handleApplyShiftEdit = (day, newName) => {
+  const shiftData = shiftColors.find((s) => s.name === newName);
+  
+  if (!shiftData) return; // На всякий случай
+
+  const updatedShifts = shifts.map((s) =>
+    s.day === day
+      ? {
+          ...s,
+          name: newName,
+          color: shiftData.color,
+          icon: shiftData.icon,
+        }
+      : s
+  );
+  setShifts(updatedShifts);
+  // saveSettingsToStorage({
+  //   shiftType, showShiftCount, showSalary, considerHolidays,
+  //   shifts: updatedShifts
+  // })
+  setEditingShift(null);
+};
 
   return (
-    <div className="p-4 min-h-screen bg-slate-100 dark:bg-slate-900 text-gray-900 dark:text-white transition">
+    <div 
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="p-4 min-h-screen bg-slate-100 dark:bg-slate-900 text-gray-900 dark:text-white transition">
       {showNotification && (
-        <div className="fixed top-4 left-4 right-4 bg-green-500/70 text-white text-center px-4 py-2 rounded shadow-lg animate-fade-in-out z-50">
+        <div className="fixed bottom-4 left-4 right-4 bg-green-500/70 text-white text-center px-4 py-2 rounded animate-fade z-50">
           Настройки применены!
         </div>
       )}
@@ -155,10 +217,23 @@ const shiftSummary = useMemo(() => {
         handleMonthChange={handleMonthChange}
         handleYearChange={handleYearChange}
       />
+      {isSettingsOpen && (
+        <div
+          className="fixed inset-0 bg-black/70 z-30 transition-opacity animate-appearance"
+          onClick={closeSettings}
+        ></div>
+      )}
       <SettingsPanel isOpen={isSettingsOpen} onClose={closeSettings} theme={theme} onApplySuccess={triggerNotification} />
-      <CalendarGrid weekDays={weekDays} shifts={shifts} handleDayClick={handleDayClick} />
+      <CalendarGrid 
+        weekDays={weekDays} 
+        shifts={shifts} 
+        handleDayClick={handleDayClick} 
+        handleDayEdit={handleApplyShiftEdit} 
+        onEdit={handleEditShift}
+      />
       <DayDetails selectedDateInfo={selectedDateInfo} />
       <ShiftLegend shiftColors={shiftColors} />
+      {editingShift && <EditShiftModal shift={editingShift} onClose={() => setEditingShift(null)} onApply={handleApplyShiftEdit} />}
       {showShiftCount && <NumberOfShifts shiftSummary={shiftSummary} />}
       {showSalary && <SalarySummary shiftSummary={shiftSummary} />}
     </div>

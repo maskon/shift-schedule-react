@@ -8,7 +8,8 @@ export const useSettings = () => {
     showShiftCount, setShowShiftCount,
     showSalary, setShowSalary,
     hourlyRate, setHourlyRate,
-    considerHolidays, setConsiderHolidays
+    considerHolidays, setConsiderHolidays,
+    setShifts
   } = useAppStore();
 
   const [tempShift, setTempShift] = useState(shiftType);
@@ -67,6 +68,12 @@ export const useSettings = () => {
     parseFloat(draftHourlyRate) === hourlyRate &&
     draftConsiderHolidays === considerHolidays;
 
+    useEffect(() => {
+      const {shifts: savedShifts} = loadSettingsFromStorage()
+      if (savedShifts) {
+        setShifts(savedShifts)
+      }
+    }, [setShifts])
   return {
     tempShift,
     setTempShift,

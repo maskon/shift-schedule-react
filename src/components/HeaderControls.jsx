@@ -14,7 +14,7 @@ const HeaderControls = ({
 }) => {
   return (
     <div className="flex justify-center flex-wrap gap-2 mb-4">     
-      <button onClick={toggleTheme} className="ml-2 p-2 rounded-full bg-slate-200 dark:bg-slate-700 cursor-pointer">
+      <button onClick={toggleTheme} className="p-2 rounded-full bg-slate-200 dark:bg-slate-700 cursor-pointer">
         {theme === "light" ? <MdDarkMode size={20} /> : <MdLightMode size={20} />}
       </button>
 

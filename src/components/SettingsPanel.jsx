@@ -21,7 +21,7 @@ const SettingsPanel = ({ isOpen, onClose, onApplySuccess }) => {
   return (
     <div
       className={clsx(
-        "fixed top-0 right-0 h-full w-full max-w-md bg-white dark:bg-slate-800 text-black dark:text-white z-50 transform transition-transform duration-300 shadow-lg",
+        "fixed top-0 right-0 h-full w-full max-w-md overflow-y-auto bg-white dark:bg-slate-800 text-black dark:text-white shadow-lg z-50 transform transition-transform duration-300 shadow-lg",
         { "translate-x-0": isOpen, "translate-x-full": !isOpen }
       )}
     >

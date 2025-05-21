@@ -3,16 +3,32 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-inter: "Inter", sans-serif; 
+  --font-inter: "Inter", sans-serif;
+  --animate-fade: fade 1s ease-in-out forwards;
+  --animate-appearance: appearance 0.3s ease-in-out forwards;
+
+  @keyframes fade {
+    0% { 
+      opacity: 0; transform: translateY(10px); 
+    }
+    10% { 
+      opacity: 1; transform: translateY(0); 
+    }
+    90% { 
+      opacity: 1; transform: translateY(0); 
+    }
+    100% { 
+      opacity: 0; transform: translateY(10px); 
+    }
+  }
+
+  @keyframes appearance {
+    0% { 
+      opacity: 0; 
+    }
+    100% { 
+      opacity: 1; 
+    }
+  }
 }
 
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(10px); }
-  10% { opacity: 1; transform: translateY(0); }
-  90% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(10px); }
-}
-
-.animate-fade-in-out {
-  animation: fadeInOut 1s ease-in-out forwards;
-}
