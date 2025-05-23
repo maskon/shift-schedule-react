@@ -13,7 +13,7 @@ import SettingsPanel from "./SettingsPanel";
 import NumberOfShifts from "./NumberOfShifts";
 import SalarySummary from "./SalarySummary";
 import EditShiftModal from "./EditShiftModal";
-// import { saveSettingsToStorage } from "../utils/settingsStorage";
+import { saveShifts, initializeShifts } from "../utils/storageManager";
 
 const ShiftsCalendar = () => {
   const { selectedMonth, selectedYear, shiftType, showShiftCount, showSalary, setSelectedMonth, setSelectedYear, shifts, setShifts,} = useAppStore();
@@ -33,6 +33,7 @@ const ShiftsCalendar = () => {
   const touchEndX = useRef(null);
   
   useEffect(() => {
+    initializeShifts();
     const today = new Date();
     setSelectedMonth(today.getMonth());
     setSelectedYear(today.getFullYear());
@@ -61,8 +62,6 @@ const ShiftsCalendar = () => {
     return () => document.querySelector('body').style.overflow = "auto"
   },[isSettingsOpen, editingShift]);
 
-  const handleMonthChange = (e) => setSelectedMonth(parseInt(e.target.value));
-  const handleYearChange = (e) => setSelectedYear(parseInt(e.target.value));
   const handleDayClick = (shift) => {
     if (!shift || !shift.day) return;
     const clickedDate = new Date(selectedYear, selectedMonth, shift.day);
@@ -173,29 +172,18 @@ const ShiftsCalendar = () => {
     setEditingShift(shift);
   };
 
-  const handleApplyShiftEdit = (day, newName) => {
-    const shiftData = shiftColors.find((s) => s.name === newName);
-    
-    if (!shiftData) return;
+const handleApplyShiftEdit = (day, newName) => {
+  const shiftData = shiftColors.find((s) => s.name === newName);
+  if (!shiftData || !day) return;
 
-    const updatedShifts = shifts.map((s) =>
-      s.day === day
-        ? {
-            ...s,
-            name: newName,
-            color: shiftData.color,
-            icon: shiftData.icon,
-          }
-        : s
-    );
-    setShifts(updatedShifts);
-    // saveSettingsToStorage({
-    //   shiftType, showShiftCount, showSalary, considerHolidays,
-    //   shifts: updatedShifts
-    // })
-    setEditingShift(null);
-    console.log(updatedShifts)
-  };
+  const updatedShifts = shifts.map(s => 
+    s.day === day ? { ...s, ...shiftData } : s
+  );
+  
+  saveShifts(shiftType, selectedYear, selectedMonth, updatedShifts);
+  setShifts(updatedShifts);
+  setEditingShift(null);
+};
 
   return (
     <div 
@@ -211,12 +199,12 @@ const ShiftsCalendar = () => {
       <HeaderControls
         isOpen={isSettingsOpen}
         onOpenSettings={openSettings}onCloseSettings={closeSettings}
-        selectedMonth={selectedMonth}
-        selectedYear={selectedYear}
+        selectedMonth={selectedMonth ?? new Date().getMonth()}
+        selectedYear={selectedYear ?? new Date().getFullYear()}
         theme={theme}
         toggleTheme={toggleTheme}
-        handleMonthChange={handleMonthChange}
-        handleYearChange={handleYearChange}
+        handleMonthChange={(month) => setSelectedMonth(month)}
+        handleYearChange={(year) => setSelectedYear(year)}
       />
       {isSettingsOpen && (
         <div

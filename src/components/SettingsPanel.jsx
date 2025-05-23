@@ -15,8 +15,26 @@ const SettingsPanel = ({ isOpen, onClose, onApplySuccess }) => {
     isUnchanged,
     showNotification,
     draftConsiderHolidays,
-    setDraftConsiderHolidays
+    setDraftConsiderHolidays,
+    // setShiftType
   } = useSettings();
+
+  const handleShiftTypeChange = (e) => {
+    const newShiftType = parseInt(e.target.value);
+    setTempShift(newShiftType);
+    // Только меняем временное значение, не применяем сразу
+  };
+
+  const handleApply = () => {
+    // Очищаем переопределения только при применении
+    localStorage.removeItem("shiftOverrides");
+    const applied = applySettings();
+    if (applied) {
+      onApplySuccess?.();
+      onClose();
+    }
+  };
+
 
   return (
     <div
@@ -35,7 +53,10 @@ const SettingsPanel = ({ isOpen, onClose, onApplySuccess }) => {
       <div className="p-4 space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Выбор смены</label>
-          <select className="w-full p-2 border dark:border-gray-600 bg-white dark:bg-gray-700 rounded" value={tempShift} onChange={(e) => setTempShift(parseInt(e.target.value))} >
+          <select 
+            className="w-full p-2 border dark:border-gray-600 bg-white dark:bg-gray-700 rounded" 
+            value={tempShift} 
+            onChange={ handleShiftTypeChange } >
             <option value={0}>Смена 1</option>
             <option value={1}>Смена 2</option>
             <option value={2}>Смена 3</option>
@@ -90,6 +111,7 @@ const SettingsPanel = ({ isOpen, onClose, onApplySuccess }) => {
               onApplySuccess?.();
               onClose();
             }
+            handleApply();
           }} 
           disabled={isUnchanged} 
           className={clsx(

@@ -75,6 +75,7 @@ export const useSettings = () => {
       }
     }, [setShifts])
     return {
+      setShiftType,
       tempShift,
       setTempShift,
       draftShowShiftCount,

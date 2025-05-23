@@ -14,8 +14,8 @@ export const useAppStore = create((set) => ({
     }),  
   
   // Дата
-  selectedMonth: null,
-  selectedYear: null,
+  selectedMonth: new Date().getMonth(), // Начальное значение
+  selectedYear: new Date().getFullYear(), // Начальное значение
   baseDate: new Date(2023, 0, 11),
   setBaseDate: (date) => set({ baseDate: date }),
   setSelectedMonth: (month) => set({ selectedMonth: month }),

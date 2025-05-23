@@ -2,7 +2,7 @@ export const shiftColors = [
   { color: "bg-green-100 dark:bg-green-800", name: "1 смена", icon: 'FiSun' },
   { color: "bg-cyan-200 dark:bg-cyan-800", name: "2 смена", icon: 'FiUsers' },
   { color: "bg-gray-400 dark:bg-gray-700", name: "3 смена", icon: 'FiMoon' },
-  { color: "bg-transparent", name: "Выходной", icon: '' },
+  { color: "bg-transparent", name: "Выходной", icon: null },
 ];
 
 export const baseDates = [
