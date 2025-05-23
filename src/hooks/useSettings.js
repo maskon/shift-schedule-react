@@ -74,21 +74,21 @@ export const useSettings = () => {
         setShifts(savedShifts)
       }
     }, [setShifts])
-  return {
-    tempShift,
-    setTempShift,
-    draftShowShiftCount,
-    setDraftShowShiftCount,
-    draftShowSalary,
-    setDraftShowSalary,
-    draftHourlyRate,
-    setDraftHourlyRate,
-    rateError,
-    setRateError,
-    applySettings,
-    isUnchanged,
-    showNotification,
-    draftConsiderHolidays,
-    setDraftConsiderHolidays
+    return {
+      tempShift,
+      setTempShift,
+      draftShowShiftCount,
+      setDraftShowShiftCount,
+      draftShowSalary,
+      setDraftShowSalary,
+      draftHourlyRate,
+      setDraftHourlyRate,
+      rateError,
+      setRateError,
+      applySettings,
+      isUnchanged,
+      showNotification,
+      draftConsiderHolidays,
+      setDraftConsiderHolidays
+    };
   };
-};

@@ -16,7 +16,7 @@ import EditShiftModal from "./EditShiftModal";
 // import { saveSettingsToStorage } from "../utils/settingsStorage";
 
 const ShiftsCalendar = () => {
-  const { selectedMonth, selectedYear,shiftType,showShiftCount,showSalary,setSelectedMonth,setSelectedYear,shifts,setShifts,} = useAppStore();
+  const { selectedMonth, selectedYear, shiftType, showShiftCount, showSalary, setSelectedMonth, setSelectedYear, shifts, setShifts,} = useAppStore();
   const considerHolidays = useAppStore((state) => state.considerHolidays);
 
   const [selectedDateInfo, setSelectedDateInfo] = useState(null);
@@ -39,15 +39,15 @@ const ShiftsCalendar = () => {
   }, [setSelectedMonth, setSelectedYear]);
 
   useEffect(() => {
-  const shifts = generateShiftsForMonth({
-    month: selectedMonth,
-    year: selectedYear,
-    shiftType,
-  });
-  setShifts(shifts);
-}, [selectedMonth, selectedYear, shiftType, setShifts]);
+    const shifts = generateShiftsForMonth({
+      month: selectedMonth,
+      year: selectedYear,
+      shiftType,
+    });
+    setShifts(shifts);
+  }, [selectedMonth, selectedYear, shiftType, setShifts]);
 
-useEffect(() => {
+  useEffect(() => {
     const info = getTodayShiftInfo(selectedYear, selectedMonth, shiftType);
     if (info) setSelectedDateInfo(info);
   }, [shifts, selectedMonth, selectedYear, shiftType]);
@@ -149,24 +149,24 @@ useEffect(() => {
     }
 
     return { total, night, holidayDayHours, holidayNightHours };
-}, [shifts, considerHolidays, selectedMonth, selectedYear, holidayDates]);
+  }, [shifts, considerHolidays, selectedMonth, selectedYear, holidayDates]);
 
-const handleTouchStart = (e) => {
-  touchStartX.current = e.changedTouches[0].screenX;
-};
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  };
 
-const handleTouchEnd = (e) => {
-  touchEndX.current = e.changedTouches[0].screenX;
-  const deltaX = touchStartX.current - touchEndX.current;
+  const handleTouchEnd = (e) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    const deltaX = touchStartX.current - touchEndX.current;
 
-  if (deltaX > 100 && !isSettingsOpen) {
-    // Свайп влево — открыть
-    openSettings();
-  } else if (deltaX < -100 && isSettingsOpen) {
-    // Свайп вправо — закрыть
-    closeSettings();
-  }
-};
+    if (deltaX > 100 && !isSettingsOpen) {
+      // Свайп влево — открыть
+      openSettings();
+    } else if (deltaX < -100 && isSettingsOpen) {
+      // Свайп вправо — закрыть
+      closeSettings();
+    }
+  };
 
   const handleEditShift = (shift) => {
     if (!shift || !shift.day || shift.name === "Пусто") return;
@@ -174,27 +174,28 @@ const handleTouchEnd = (e) => {
   };
 
   const handleApplyShiftEdit = (day, newName) => {
-  const shiftData = shiftColors.find((s) => s.name === newName);
-  
-  if (!shiftData) return; // На всякий случай
+    const shiftData = shiftColors.find((s) => s.name === newName);
+    
+    if (!shiftData) return;
 
-  const updatedShifts = shifts.map((s) =>
-    s.day === day
-      ? {
-          ...s,
-          name: newName,
-          color: shiftData.color,
-          icon: shiftData.icon,
-        }
-      : s
-  );
-  setShifts(updatedShifts);
-  // saveSettingsToStorage({
-  //   shiftType, showShiftCount, showSalary, considerHolidays,
-  //   shifts: updatedShifts
-  // })
-  setEditingShift(null);
-};
+    const updatedShifts = shifts.map((s) =>
+      s.day === day
+        ? {
+            ...s,
+            name: newName,
+            color: shiftData.color,
+            icon: shiftData.icon,
+          }
+        : s
+    );
+    setShifts(updatedShifts);
+    // saveSettingsToStorage({
+    //   shiftType, showShiftCount, showSalary, considerHolidays,
+    //   shifts: updatedShifts
+    // })
+    setEditingShift(null);
+    console.log(updatedShifts)
+  };
 
   return (
     <div 

@@ -19,9 +19,9 @@ export const loadSettingsFromStorage = () => {
   };
 };
 
-export const saveSettingsToStorage = ({ shiftType, showSalary, hourlyRate, considerHolidays }) => {
+export const saveSettingsToStorage = ({ shiftType, showShiftCount, showSalary, hourlyRate, considerHolidays }) => {
   localStorage.setItem("shiftType", shiftType.toString());
-  // localStorage.setItem("showShiftCount", JSON.stringify(showShiftCount));
+  localStorage.setItem("showShiftCount", JSON.stringify(showShiftCount));
   localStorage.setItem("showSalary", JSON.stringify(showSalary));
   localStorage.setItem("hourlyRate", Math.abs(hourlyRate).toString());
   localStorage.setItem("considerHolidays", JSON.stringify(considerHolidays));
