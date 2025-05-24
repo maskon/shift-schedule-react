@@ -18,17 +18,17 @@ import { saveShifts, initializeShifts } from "../utils/storageManager";
 const ShiftsCalendar = () => {
   const { selectedMonth, selectedYear, shiftType, showShiftCount, showSalary, setSelectedMonth, setSelectedYear, shifts, setShifts,} = useAppStore();
   const considerHolidays = useAppStore((state) => state.considerHolidays);
-
+  
   const [selectedDateInfo, setSelectedDateInfo] = useState(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const holidayDates = generateHolidayDates(selectedYear);
   const [showNotification, setShowNotification] = useState(false);
   const [editingShift, setEditingShift] = useState(null);
-
+  
   const openSettings = () => setIsSettingsOpen(true);
   const closeSettings = () => setIsSettingsOpen(false);
-
+  
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
   
@@ -61,7 +61,7 @@ const ShiftsCalendar = () => {
     }
     return () => document.querySelector('body').style.overflow = "auto"
   },[isSettingsOpen, editingShift]);
-
+  
   const handleDayClick = (shift) => {
     if (!shift || !shift.day) return;
     const clickedDate = new Date(selectedYear, selectedMonth, shift.day);
@@ -172,18 +172,19 @@ const ShiftsCalendar = () => {
     setEditingShift(shift);
   };
 
-const handleApplyShiftEdit = (day, newName) => {
-  const shiftData = shiftColors.find((s) => s.name === newName);
-  if (!shiftData || !day) return;
+  const handleApplyShiftEdit = (day, newName) => {
+    const shiftData = shiftColors.find((s) => s.name === newName);
+    if (!shiftData || !day) return;
 
-  const updatedShifts = shifts.map(s => 
-    s.day === day ? { ...s, ...shiftData } : s
-  );
-  
-  saveShifts(shiftType, selectedYear, selectedMonth, updatedShifts);
-  setShifts(updatedShifts);
-  setEditingShift(null);
-};
+    const updatedShifts = shifts.map(s => 
+      s.day === day ? { ...s, ...shiftData } : s
+    );
+    
+    saveShifts(shiftType, selectedYear, selectedMonth, updatedShifts);
+    setShifts(updatedShifts);
+    setEditingShift(null);
+  };
+
 
   return (
     <div 

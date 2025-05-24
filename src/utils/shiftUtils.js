@@ -1,9 +1,8 @@
 import { calculateShift } from "./shiftCalculations";
-import { loadShifts } from "./storageManager"; // Изменяем импорт
+import { loadShifts } from "./storageManager";
 import { shiftColors } from "./shiftConfig";
 
 export const generateShiftsForMonth = ({ month, year, shiftType }) => {
-  // Заменяем loadShiftOverrides на loadShifts
   const savedShifts = loadShifts(shiftType, year, month);
   if (savedShifts) return savedShifts;
 
@@ -22,7 +21,7 @@ export const generateShiftsForMonth = ({ month, year, shiftType }) => {
     const currentDate = new Date(year, month, day);
     const shiftIndex = calculateShift(currentDate, shiftType);
     const shift = shiftIndex === -1
-      ? { color: "bg-transparent", name: "Выходной", icon: null }
+      ? { color: "bg-transparent", name: "Выходной", icon: 'FiCoffee' }
       : shiftColors[shiftIndex];
     days.push({ day, ...shift });
   }

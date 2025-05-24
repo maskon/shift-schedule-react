@@ -9,7 +9,7 @@ export function getTodayShiftInfo(year, month, shiftType) {
 
   const shiftIndex = calculateShift(today, shiftType);
   const shift = shiftIndex === -1 
-    ? { color: "bg-transparent", name: "Выходной", icon: null }
+    ? { color: "bg-transparent", name: "Выходной", icon: 'FiCoffee' }
     : shiftColors[shiftIndex];
 
   return {

@@ -19,7 +19,7 @@ const EditShiftModal = ({ shift, onClose, onApply }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
       <div
         className={`bg-white dark:bg-slate-800 p-6 rounded shadow-lg w-80 transform transition-all duration-200 ${
           visible ? "scale-100 opacity-100" : "scale-95 opacity-0"

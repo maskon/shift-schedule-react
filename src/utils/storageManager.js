@@ -57,7 +57,7 @@ const generateBaseShifts = (shiftType, year, month) => {
     const date = new Date(year, month, day);
     const shiftIndex = calculateShift(date, shiftType);
     const shift = shiftIndex === -1
-      ? { color: "bg-transparent", name: "Выходной", icon: null }
+      ? { color: "bg-transparent", name: "Выходной", icon: 'FiCoffee' }
       : shiftColors[shiftIndex];
     
     days.push({ day, ...shift });
