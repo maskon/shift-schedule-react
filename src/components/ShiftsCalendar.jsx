@@ -189,10 +189,6 @@ const ShiftsCalendar = () => {
         : s
     );
     setShifts(updatedShifts);
-    // saveSettingsToStorage({
-    //   shiftType, showShiftCount, showSalary, considerHolidays,
-    //   shifts: updatedShifts
-    // })
     setEditingShift(null);
     console.log(updatedShifts)
   };
@@ -201,7 +197,7 @@ const ShiftsCalendar = () => {
     <div 
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className="p-4 min-h-screen bg-slate-100 dark:bg-slate-900 text-gray-900 dark:text-white transition">
+      className="p-4 min-h-screen bg-slate-100 dark:bg-slate-900 text-gray-900 dark:text-white transition select-none">
       {showNotification && (
         <div className="fixed bottom-4 left-4 right-4 bg-green-500/70 text-white text-center px-4 py-2 rounded animate-fade z-50">
           Настройки применены!
