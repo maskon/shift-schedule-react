@@ -1,6 +1,6 @@
 {
-  "name": "Shift Schedule",
-  "short_name": "Schedule",
+  "name": "График смен",
+  "short_name": "График",
   "start_url": "/shift-schedule-react/",
   "scope": "/shift-schedule-react/",
   "display": "standalone",
