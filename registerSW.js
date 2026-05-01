@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/shift-schedule-react/sw.js', { scope: '/shift-schedule-react/' })})}
